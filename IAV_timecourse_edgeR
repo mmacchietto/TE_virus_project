@@ -6,23 +6,31 @@
 ##########################################################################################
 ##########################################################################################
 
+# this code identifies differentially expressed genes, repeats/TEs by comparing 0h (mock) to each infection time point
+# Time points that are within 1-2 hours apart are grouped as biological replicates
 
+# load repeat-gene relationship table
 fullmaster <- read.delim("~/Desktop/TE_project/mouse_encode/counts/ENCODE-processed-totalRNA/MM_EP_STAR_FC_DFAM_finalresults/master.te.to.gene.table.FULL.exonannot2.txt",skip=1,header=FALSE)
+
+# load gene and repeat counts matrices
 genes <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/featurecounts/IAV_timecourse_gene_counts3.mx",sep="\t", skip=1, header = T, row.names=1)
 reps <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/featurecounts/IAV_timecourse_repeat_counts3.mx",sep="\t", skip=1, header = T, row.names=1)
 
+# update the sample IDs on the gene counts matrix
 colnames(genes) <- sub("X.home.mmacchie.mouse.encode.virus.IAV_timecourse.bams.", "", colnames(genes))
 colnames(genes) <- sub("Aligned.sortedByCoord.out.bam", "", colnames(genes))
 colnames(genes) <- sub("Aligned.sortedByCoord.out.sorted_DS.bam", "", colnames(genes))
 colnames(genes) <- sub("...bams_no_virus_UCSC.", "", colnames(genes))
 colnames(genes) <- sub("bams_no_virus_UCSC.","",colnames(genes))
 
+# update the sample IDs on the repeat counts matrix
 colnames(reps) <- sub("X.home.mmacchie.mouse.encode.virus.IAV_timecourse.bams.", "", colnames(reps))
 colnames(reps) <- sub("Aligned.sortedByCoord.out.bam", "", colnames(reps))
 colnames(reps) <- sub("Aligned.sortedByCoord.out.sorted_DS.bam", "", colnames(reps))
 colnames(reps) <- sub("...bams_no_virus_UCSC.", "", colnames(reps))
 colnames(reps) <- sub("bams_no_virus_UCSC.","",colnames(reps))
 
+# Remove simple repeat elements from the repeat counts matrix
 SRs <- fullmaster[fullmaster$V12 =="Simple_repeat",]$V10
 reps <- reps[!rownames(reps) %in% SRs,]
 reps <- na.omit(reps)
@@ -31,24 +39,27 @@ genes <- genes[, c(6:dim(genes)[2])]
 rep.anno <- reps[, c(1:5)]
 reps <- reps[, c(6:dim(reps)[2])]
 
+# Combined the repeat and gene counts matrices
 #anno <- rbind(gene.anno,rep.anno)
 genes <- rbind(genes,reps)
 library(edgeR)
 rpkms <- rpkm(genes,anno$Length)
 cpms <- cpm(genes)
+# Reorder the samples in the combined counts matrix
 neworder = c("mock","mock_2","inf_3h","inf_4h","inf_11h","inf_12h","inf_26h","inf_28h","inf_49h","inf_50h","inf_74h","inf_75h","inf_98h","inf_99h","inf_122h","inf_123h","inf_148h","inf_149h")
 cpms <- cpms[,match(neworder,colnames(cpms))]
 
-# Compare each infection time point to 0h
-e1 <- genes[,c(9,11,19,20)] #3
-e2 <- genes[,c(1,4,19,20)] #11
-e3 <- genes[,c(7,8,19,20)] #26
-e4 <- genes[,c(10,12,19,20)] #49
-e5 <- genes[,c(13,14,19,20)] #74
-e6 <- genes[,c(17,18,19,20)] #98
-e7 <- genes[,c(2,3,19,20)] #122
-e8 <- genes[,c(5,6,19,20)] #149
+# Subset the combined counts matrix for all the downstream infection time point comparisons to 0h
+e1 <- genes[,c(9,11,19,20)] #3h
+e2 <- genes[,c(1,4,19,20)] #11h
+e3 <- genes[,c(7,8,19,20)] #26h
+e4 <- genes[,c(10,12,19,20)] #49h
+e5 <- genes[,c(13,14,19,20)] #74h
+e6 <- genes[,c(17,18,19,20)] #98h
+e7 <- genes[,c(2,3,19,20)] #122h
+e8 <- genes[,c(5,6,19,20)] #149h
 
+# Comparison of 3-4h to 0h
 library(edgeR)
 y <- DGEList(counts=e1,group=c(1,1,2,2))
 keep <- rowSums(cpm(y)>1) >= 2
@@ -72,7 +83,7 @@ dgs1_down <- dgs1[dgs1$logFC > 0,]
 dreps1_up <- dreps1[dreps1$logFC < 0,]
 dreps1_down <- dreps1[dreps1$logFC > 0,]
 
-
+# Comparison of 11-12h to 0h
 y <- DGEList(counts=e2,group=c(1,1,2,2))
 keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
@@ -95,7 +106,7 @@ dgs2_down <- dgs2[dgs2$logFC > 0,]
 dreps2_up <- dreps2[dreps2$logFC < 0,]
 dreps2_down <- dreps2[dreps2$logFC > 0,]
 
-
+# Comparison of 26-28h to 0h
 y <- DGEList(counts=e3,group=c(1,1,2,2))
 keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
@@ -118,6 +129,7 @@ dgs3_down <- dgs3[dgs3$logFC > 0,]
 dreps3_up <- dreps3[dreps3$logFC < 0,]
 dreps3_down <- dreps3[dreps3$logFC > 0,]
 
+# Comparison of 49-50h to 0h
 y <- DGEList(counts=e4,group=c(1,1,2,2))
 keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
@@ -140,7 +152,7 @@ dgs4_down <- dgs4[dgs4$logFC > 0,]
 dreps4_up <- dreps4[dreps4$logFC < 0,]
 dreps4_down <- dreps4[dreps4$logFC > 0,]
 
-
+# Comparison of 74-75h to 0h
 y <- DGEList(counts=e5,group=c(1,1,2,2))
 keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
@@ -163,7 +175,7 @@ dgs5_down <- dgs5[dgs5$logFC > 0,]
 dreps5_up <- dreps5[dreps5$logFC < 0,]
 dreps5_down <- dreps5[dreps5$logFC > 0,]
 
-
+# Comparison of 98-99h to 0h
 y <- DGEList(counts=e6,group=c(1,1,2,2))
 keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
@@ -186,6 +198,7 @@ dgs6_down <- dgs6[dgs6$logFC > 0,]
 dreps6_up <- dreps6[dreps6$logFC < 0,]
 dreps6_down <- dreps6[dreps6$logFC > 0,]
 
+# Comparison of 122-123h to 0h
 y <- DGEList(counts=e7,group=c(1,1,2,2))
 keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
@@ -208,6 +221,7 @@ dgs7_down <- dgs7[dgs7$logFC > 0,]
 dreps7_up <- dreps7[dreps7$logFC < 0,]
 dreps7_down <- dreps7[dreps7$logFC > 0,]
 
+# Comparison of 149-150h to 0h
 y <- DGEList(counts=e8,group=c(1,1,2,2))
 keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
