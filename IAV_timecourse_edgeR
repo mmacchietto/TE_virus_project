@@ -6,7 +6,7 @@
 ##########################################################################################
 ##########################################################################################
 
-# this code identifies differentially expressed genes, repeats/TEs by comparing 0h (mock) to each infection time point
+# This code identifies differentially expressed genes, repeats/TEs by comparing 0h (mock) to each infection time point
 # Time points that are within 1-2 hours apart are grouped as biological replicates
 
 # load repeat-gene relationship table
@@ -39,7 +39,7 @@ genes <- genes[, c(6:dim(genes)[2])]
 rep.anno <- reps[, c(1:5)]
 reps <- reps[, c(6:dim(reps)[2])]
 
-# Combined the repeat and gene counts matrices
+# Combine the repeat and gene counts matrices
 #anno <- rbind(gene.anno,rep.anno)
 genes <- rbind(genes,reps)
 library(edgeR)
