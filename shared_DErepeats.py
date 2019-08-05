@@ -3,7 +3,7 @@
 import sys,glob
 
 outfile = open('shared.DEreps2.FDR0.05.mouseviruses2.txt','w')
-### DE gene portion
+### create virus list from edgeR results files that are names "DEreps2_<virusname>_FDR0.05.txt".
 DEreps2 = {}
 vecsize = len(glob.glob('./DEreps2*_FDR0.05.txt'))
 viruslist = glob.glob('./DEreps2*_FDR0.05.txt')
