@@ -1,4 +1,4 @@
-# This pipeline aligns fastq files to genome, 
+# This pipeline aligns fastq files to genome, quantifies repeat subfamily expression (TEtranscripts), identfies transcriptional readthrough regions (DoGFinder), quantified intron features, gene features and repeat element features (featureCounts).
 
 #! /bin/bash/
 
@@ -30,14 +30,17 @@ nohup TEtranscripts --mode multi --GTF mm10_HSV-1_LIM.gtf --TE ~/mouse/encode/an
 
 ####----DoGFinder-----------------------------------------####
 
+# Index all bam files
 for sample in `ls /home/mmacchie/mouse/encode/virus/HSV-1_LIM/bams_no_virus_UCSC/*.bam`
 do
 base=$(basename $sample ".bam")
 samtools index ${sample}
 done
 
-Pre_Process -Q 7 -bam  -ref ~/mouse/encode/annot/annot/loci_annotation.bed
+# Preprocess all bam files for DoGFinder
+Pre_Process -Q 7 -bam bams_no_virus_UCSC/inf_1Aligned.sortedByCoord.out.bam,bams_no_virus_UCSC/inf_2Aligned.sortedByCoord.out.bam,bams_no_virus_UCSC/mock_1Aligned.sortedByCoord.out.bam,bams_no_virus_UCSC/mock_2Aligned.sortedByCoord.out.bam -ref ~/mouse/encode/annot/annot/loci_annotation.bed
 
+# Identify DoGs in each bam file; minimum DoG length = 1000bp 
 mkdir DoGFinder/outdir/
 for sample in `ls /home/mmacchie/mouse/encode/virus/HSV-1_LIM/bams_no_virus_UCSC/*sorted_DS.bam`
 do
@@ -45,14 +48,15 @@ base=$(basename $sample "Aligned.sortedByCoord.out.sorted_DS.bam")
 Get_DoGs -out DoGFinder/outdir -bam ${sample} -suff ${base} -a ~/human/encode/annot/annot/loci_annotation.bed -minDoGLen 1000 -minDoGCov 0.5 -w 200 -mode F
 done
 
-
-Union_DoGs_annotation -dog  -out DoGFinder/ 
+# Take the union of all DoG regions between mock and infected samples
+Union_DoGs_annotation -dog DoGFinder/outdir/Final_Dog_annotation_inf_1.bed,DoGFinder/outdir/Final_Dog_annotation_inf_2.bed,DoGFinder/outdir/Final_Dog_annotation_mock_1.bed,DoGFinder/outdir/Final_Dog_annotation_mock_2.bed -out DoGFinder/ 
 mv DoGFinder/union_dog_annotation.bed DoGFinder/all_HSV-1_LIM_DoGs.bed
 
 
 
-####----Featurecounts - genes and repeats-----------------####
+####----featureCounts - genes and repeats-----------------####
 
+# Quantify gene and repeat features with featureCounts
 for sample in `ls /home/mmacchie/mouse/encode/virus/HSV-1_LIM/bams_no_virus_UCSC/*Aligned.sortedByCoord.out.bam`
 do
 base=$(basename $sample "Aligned.sortedByCoord.out.bam")
@@ -63,7 +67,7 @@ nohup featureCounts -T 4 -t exon -g gene_id -a /home/mmacchie/mouse/encode/annot
 nohup featureCounts -T 4 -t exon -g gene_id -a /home/mmacchie/mouse/encode/annot/Mus_musculus.GRCm38.90.chr.gtf -o ${dir}/${base}_gene_counts.txt ${sample} &
 done 
 
-# Create repeat and gene counts matrices
+# Create repeat and gene counts matrices from individual sample files
 awk 'FNR==1{f++}{a[f,FNR]=$7}END{for(x=1;x<=FNR;x++){for(y=1;y<ARGC;y++)printf("%s\t",a[y,x]);print ""}}' featurecounts/*gene_counts.txt | sed 's/\t$//' > featurecounts/tmp.txt 
 paste <(cut -f 1-6 featurecounts/inf_1*_gene_counts.txt) featurecounts/tmp.txt > featurecounts/HSV-1_LIM_gene_counts.mx
 awk 'FNR==1{f++}{a[f,FNR]=$7}END{for(x=1;x<=FNR;x++){for(y=1;y<ARGC;y++)printf("%s\t",a[y,x]);print ""}}' featurecounts/*repeat_counts.txt | sed 's/\t$//' > featurecounts/tmp.txt
