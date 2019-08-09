@@ -1,4 +1,4 @@
-# This pipeline aligns fastq files to genome, quantifies repeat subfamily expression (TEtranscripts), identfies transcriptional readthrough regions (DoGFinder), quantified intron features, gene features and repeat element features (featureCounts).
+# This pipeline aligns fastq files to genome, quantifies repeat subfamily expression (TEtranscripts), identifies transcriptional readthrough regions (DoGFinder), and quantifies intron features, gene features and repeat element features (featureCounts).
 
 #! /bin/bash/
 
