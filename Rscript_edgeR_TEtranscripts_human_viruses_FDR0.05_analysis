@@ -90,7 +90,6 @@ library(edgeR)
 # create normalized count matrix
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 hpv_cpm <- cpm(data)
-#hpv_tpm <- tpm(data,master_gene_hg38)
 
 y <- DGEList(counts=data,group=c(1,1,2,2))
 keep <- rowSums(cpm(y)>1) >= 2
@@ -106,7 +105,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data_reps <- data[rownames(data) %in% rownames(test),]
 hpv_cpm_de <- hpv_cpm[rownames(hpv_cpm) %in% rownames(test),]
-#hpv_tpm_de <- hpv_tpm[rownames(hpv_tpm) %in% rownames(test),]
 HPV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -182,7 +180,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data_reps <- data[rownames(data) %in% rownames(test),]
 hcv_cpm_de <- hcv_cpm[rownames(hcv_cpm) %in% rownames(test),]
-#hcv_tpm_de <- hcv_tpm[rownames(hcv_tpm) %in% rownames(test),]
 HCV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -248,7 +245,6 @@ library(edgeR)
 
 # create normalized count matrix
 hiv_rest_cpm <- cpm(data)
-#hiv_rest_tpm <- tpm(data,master_gene_hg38)
 
 data1 <- data[,c(2,4,6,7,10,11)] # resting
 data1 <- data1[!rownames(data1) %in% hg38.viruses$V1,]
@@ -266,7 +262,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data_reps <- data[rownames(data) %in% rownames(test),]
 hiv_rest_cpm_de <- hiv_rest_cpm[rownames(hiv_rest_cpm) %in% rownames(test),]
-#hiv_rest_tpm_de <- hiv_rest_tpm[rownames(hiv_rest_tpm) %in% rownames(test),]
 HIV_rest <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -329,7 +324,6 @@ library(edgeR)
 
 # create normalized count matrix
 hiv_act_cpm <- cpm(data)
-#hiv_act_tpm <- tpm(data,master_gene_hg38)
 
 data2 <- data[,c(1,3,5,8,9,12)] # activated
 data2 <- data2[!rownames(data2) %in% hg38.viruses$V1,]
@@ -347,7 +341,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data_reps <- data[rownames(data) %in% rownames(test),]
 hiv_act_cpm_de <- hiv_act_cpm[rownames(hiv_act_cpm) %in% rownames(test),]
-#hiv_act_tpm_de <- hiv_act_tpm[rownames(hiv_act_tpm) %in% rownames(test),]
 HIV_act <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -410,7 +403,6 @@ library(edgeR)
 
 # create normalized count matrix
 kshv_mc116_cpm <- cpm(data)
-#kshv_mc116_tpm <- tpm(data,master_gene_hg38)
 
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
@@ -427,7 +419,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data_reps <- data[rownames(data) %in% rownames(test),]
 kshv_mc116_cpm_de <- kshv_mc116_cpm[rownames(kshv_mc116_cpm) %in% rownames(test),]
-#kshv_mc116_tpm_de <- kshv_mc116_tpm[rownames(kshv_mc116_tpm) %in% rownames(test),]
 KSHV_mc116 <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -487,7 +478,6 @@ library(edgeR)
 
 # create normalized count matrix
 kshv_huvec_cpm <- cpm(data)
-#kshv_huvec_tpm <- tpm(data,master_gene_hg38)
 
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data,group=c(1,1,2,2))
@@ -504,7 +494,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data_reps <- data[rownames(data) %in% rownames(test),]
 kshv_huvec_cpm_de <- kshv_huvec_cpm[rownames(kshv_huvec_cpm) %in% rownames(test),]
-#kshv_huvec_tpm_de <- kshv_huvec_tpm[rownames(kshv_huvec_tpm) %in% rownames(test),]
 KSHV_huvec <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -565,7 +554,6 @@ library(edgeR)
 
 # create normalized count matrix
 sendai_cpm <- cpm(data)
-#sendai_tpm <- tpm(data,master_gene_hg38)
 
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data,group=c(1,1,2,2))
@@ -582,7 +570,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data_reps <- data[rownames(data) %in% rownames(test),]
 sendai_cpm_de <- sendai_cpm[rownames(sendai_cpm) %in% rownames(test),]
-#sendai_tpm_de <- sendai_tpm[rownames(sendai_tpm) %in% rownames(test),]
 SENDAI <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -643,7 +630,6 @@ data2 <- data[,c(3,4,5,7,8,9)]
 
 # create normalized count matrix
 ZKV_cpm <- cpm(data2)
-#ZKV_tpm <- tpm(data2,master_gene_hg38)
 
 data2 <- data2[!rownames(data2) =="AMB18850.1",]
 y <- DGEList(counts=data2,group=c(1,1,1,2,2,2))
@@ -658,10 +644,8 @@ tt <- topTags(et,n=dim(data2)[1])
 tt <- tt$table
 test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
-#data2_reps <- data2[rownames(data2) %in% rownames(test),]
 ZKV <- test
 ZKV_cpm_de <- ZKV_cpm[rownames(ZKV_cpm) %in% rownames(test),]
-#ZKV_tpm_de <- ZKV_tpm[rownames(ZKV_tpm) %in% rownames(test),]
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
 ZKVg <- test2
@@ -720,7 +704,6 @@ library(edgeR)
 
 # create normalized count matrix
 EBOV_cpm <- cpm(data)
-#EBOV_tpm <- tpm(data,master_gene_hg38)
 
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
@@ -737,7 +720,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data2_reps <- data2[rownames(data2) %in% rownames(test),]
 EBOV_cpm_de <- EBOV_cpm[rownames(EBOV_cpm) %in% rownames(test),]
-#EBOV_tpm_de <- EBOV_tpm[rownames(EBOV_tpm) %in% rownames(test),]
 EBOV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -788,14 +770,10 @@ colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
 ###  Virus IDs
 hg38.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/hg38/virus.genes.hg38.txt",sep="\t",header=FALSE)
 
-
-
-
 library(edgeR)
 
 # create normalized count matrix
 EBOV_CD4T_cpm <- cpm(data)
-#EBOV_CD4T_tpm <- tpm(data,master_gene_hg38)
 
 data2 <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data2,group=c(1,1,1,1,2,2,2,2))
@@ -812,7 +790,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data2_reps <- data2[rownames(data2) %in% rownames(test),]
 EBOV_cpm_de <- EBOV_cpm[rownames(EBOV_cpm) %in% rownames(test),]
-#EBOV_tpm_de <- EBOV_tpm[rownames(EBOV_tpm) %in% rownames(test),]
 EBOVt <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -928,7 +905,6 @@ dim(test2)
 
 ### Load data
 data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/hg38/noSRs/TEtrans_VZV.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
-#data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/hg38/noSRs/TEtrans_VZV.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
 colnames(data) <- sub("bams.","",colnames(data))
 colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
 colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
@@ -943,7 +919,6 @@ library(edgeR)
 
 # create normalized count matrix
 VZV_cpm <- cpm(data)
-#VZV_tpm <- tpm(data,master_gene_hg38)
 
 data2 <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data2,group=c(1,1,2,2))
@@ -960,7 +935,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data2_reps <- data2[rownames(data2) %in% rownames(test),]
 VZV_cpm_de <- VZV_cpm[rownames(VZV_cpm) %in% rownames(test),]
-#VZV_tpm_de <- VZV_tpm[rownames(VZV_tpm) %in% rownames(test),]
 VZV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1016,7 +990,6 @@ library(edgeR)
 
 # create normalized count matrix
 RVFV_cpm <- cpm(data)
-#RVFV_tpm <- tpm(data,master_gene_hg38)
 
 
 # RVFV inf versus mock
@@ -1036,7 +1009,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data2_reps <- data2[rownames(data2) %in% rownames(test),]
 RVFV_cpm_de <- RVFV_cpm[rownames(RVFV_cpm) %in% rownames(test),]
-#RVFV_tpm_de <- RVFV_tpm[rownames(RVFV_tpm) %in% rownames(test),]
 RVFV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1082,7 +1054,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data2_reps <- data2[rownames(data2) %in% rownames(test),]
 RVFV_ZH548_cpm_de <- RVFV_cpm[rownames(RVFV_cpm) %in% rownames(test),]
-#RVFV_ZH548_tpm_de <- RVFV_tpm[rownames(RVFV_tpm) %in% rownames(test),]
 RVFV_ZH548 <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1147,7 +1118,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data_reps <- data[rownames(data) %in% rownames(test),]
 ORFV_cpm_de <- ORFV_cpm[rownames(ORFV_cpm) %in% rownames(test),]
-#ORFV_tpm_de <- ORFV_tpm[rownames(ORFV_tpm) %in% rownames(test),]
 ORFV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1209,7 +1179,6 @@ library(edgeR)
 
 # create normalized count matrix
 DFV_cpm <- cpm(data)
-#DFV_tpm <- tpm(data,master_gene_hg38)
 
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
@@ -1226,7 +1195,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data2_reps <- data2[rownames(data2) %in% rownames(test),]
 DFV_cpm_de <- DFV_cpm[rownames(DFV_cpm) %in% rownames(test),]
-#DFV_tpm_de <- DFV_tpm[rownames(DFV_tpm) %in% rownames(test),]
 DFV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1284,7 +1252,7 @@ library(edgeR)
 
 # create normalized count matrix
 HSV1_cpm <- cpm(data)
-#HSV1_tpm <- tpm(data,master_gene_hg38)
+
 
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data,group=c(1,2,1,2))
@@ -1301,7 +1269,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data2_reps <- data2[rownames(data2) %in% rownames(test),]
 HSV1_cpm_de <- HSV1_cpm[rownames(HSV1_cpm) %in% rownames(test),]
-#HSV1_tpm_de <- HSV1_tpm[rownames(HSV1_tpm) %in% rownames(test),]
 HSV1 <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1357,7 +1324,6 @@ library(edgeR)
 
 # create normalized count matrix
 EBV_cpm <- cpm(data)
-#EBV_tpm <- tpm(data,master_gene_hg38)
 
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
@@ -1374,7 +1340,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data2_reps <- data2[rownames(data2) %in% rownames(test),]
 EBV_cpm_de <- EBV_cpm[rownames(EBV_cpm) %in% rownames(test),]
-#EBV_tpm_de <- EBV_tpm[rownames(EBV_tpm) %in% rownames(test),]
 EBV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1431,7 +1396,6 @@ library(edgeR)
 
 # create normalized count matrix
 SINV_cpm <- cpm(data)
-#SINV_tpm <- tpm(data,master_gene_hg38)
 
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
@@ -1447,7 +1411,6 @@ tt <- tt$table
 test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 SINV_cpm_de <- SINV_cpm[rownames(SINV_cpm) %in% rownames(test),]
-#SINV_tpm_de <- SINV_tpm[rownames(SINV_tpm) %in% rownames(test),]
 SINV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1501,7 +1464,6 @@ library(edgeR)
 
 # create normalized count matrix
 HCMV_cpm <- cpm(data)
-#HCMV_tpm <- tpm(data,master_gene_hg38)
 
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
@@ -1517,7 +1479,6 @@ tt <- tt$table
 test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 HCMV_cpm_de <- HCMV_cpm[rownames(HCMV_cpm) %in% rownames(test),]
-#HCMV_tpm_de <- HCMV_tpm[rownames(HCMV_tpm) %in% rownames(test),]
 HCMV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1576,7 +1537,6 @@ library(edgeR)
 
 # create normalized count matrix
 MeV_cpm <- cpm(data)
-#MeV_tpm <- tpm(data,master_gene_hg38)
 
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
@@ -1592,7 +1552,6 @@ tt <- tt$table
 test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 MeV_cpm_de <- MeV_cpm[rownames(MeV_cpm) %in% rownames(test),]
-#MeV_tpm_de <- MeV_tpm[rownames(MeV_tpm) %in% rownames(test),]
 MeV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1653,7 +1612,6 @@ library(edgeR)
 
 # create normalized count matrix
 IAV_cpm <- cpm(data)
-#IAV_tpm <- tpm(data,master_gene_hg38)
 
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 data <- subset(data,!grepl("Simple_repeat$",rownames(data)))
@@ -1670,7 +1628,6 @@ tt <- tt$table
 test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 IAV_cpm_de <- IAV_cpm[rownames(IAV_cpm) %in% rownames(test),]
-#IAV_tpm_de <- IAV_tpm[rownames(IAV_tpm) %in% rownames(test),]
 IAV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1728,7 +1685,6 @@ library(edgeR)
 # create normalized count matrix
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 EBV_cpm <- cpm(data)
-#EBV_tpm <- tpm(data,master_gene_hg38)
 
 y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
 keep <- rowSums(cpm(y)>1) >= 3
@@ -1806,7 +1762,6 @@ library(edgeR)
 # create normalized count matrix
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 EBOV_MDM_cpm <- cpm(data)
-#EBOV_MDM_tpm <- tpm(data,master_gene_hg38)
 
 y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
 keep <- rowSums(cpm(y)>1) >= 3
@@ -1822,7 +1777,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data_reps <- data[rownames(data) %in% rownames(test),]
 EBOV_MDM_cpm_de <- EBOV_MDM_cpm[rownames(EBOV_MDM_cpm) %in% rownames(test),]
-#EBOV_MDM_tpm_de <- EBOV_MDM_tpm[rownames(EBOV_MDM_tpm) %in% rownames(test),]
 EBOV_MDM <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
@@ -1876,7 +1830,6 @@ hg38.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtr
 
 
 
-
 ### differential expression analysis 
 
 library(edgeR)
@@ -1884,7 +1837,6 @@ library(edgeR)
 # create normalized count matrix
 data <- data[!rownames(data) %in% hg38.viruses$V1,]
 RESTV_cpm <- cpm(data)
-#RESTV_tpm <- tpm(data,master_gene_hg38)
 
 y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
 keep <- rowSums(cpm(y)>1) >= 3
@@ -1900,7 +1852,6 @@ test <- subset(tt,!grepl("^EN",rownames(tt)))
 test <- test[test$FDR < 0.05,]
 data_reps <- data[rownames(data) %in% rownames(test),]
 RESTV_cpm_de <- RESTV_cpm[rownames(RESTV_cpm) %in% rownames(test),]
-#RESTV_tpm_de <- RESTV_tpm[rownames(RESTV_tpm) %in% rownames(test),]
 RESTV <- test
 test2 <- subset(tt,grepl("^EN",rownames(tt)))
 test2 <- test2[test2$FDR < 0.05,]
