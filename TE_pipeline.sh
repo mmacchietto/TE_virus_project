@@ -1,4 +1,5 @@
 # This pipeline aligns fastq files to genome, quantifies repeat subfamily expression (TEtranscripts), identifies transcriptional readthrough regions (DoGFinder), and quantifies intron features, gene features and repeat element features (featureCounts).
+# Example here is for HSV-1 data set.
 
 #! /bin/bash/
 
