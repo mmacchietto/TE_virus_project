@@ -4,7 +4,7 @@
 #! /bin/bash/
 
 ####----Align reads to mm10 genome------------------------####
-for sample in `ls /home/mmacchie/mouse/encode/virus/HSV-1_LIM/*.fq`
+for sample in `ls /home/mmacchie/mouse/virus/HSV-1_LIM/*.fq`
 do
 base=$(basename $sample ".fq")
 STAR --runThreadN 12 --runMode alignReads --genomeDir ../../index_STAR/genome --readFilesIn ${sample} --outFileNamePrefix bams_no_virus_UCSC/${base} --outSAMtype BAM SortedByCoordinate --outFilterMultimapNmax 100 --winAnchorMultimapNmax 100
@@ -15,7 +15,7 @@ done
 
 ####----Align reads to mm10 + virus genome----------------####
 
-for sample in `ls /home/mmacchie/mouse/encode/virus/HSV-1_LIM/*.fq`
+for sample in `ls /home/mmacchie/mouse/virus/HSV-1_LIM/*.fq`
 do
 base=$(basename $sample ".fq")
 STAR --runThreadN 12 --runMode alignReads --genomeDir genome/ --readFilesIn ${sample} --outFileNamePrefix bams/${base} --outSAMtype BAM SortedByCoordinate --outFilterMultimapNmax 100 --winAnchorMultimapNmax 100
@@ -32,7 +32,7 @@ nohup TEtranscripts --mode multi --GTF mm10_HSV-1_LIM.gtf --TE ~/mouse/encode/an
 ####----DoGFinder-----------------------------------------####
 
 # Index all bam files
-for sample in `ls /home/mmacchie/mouse/encode/virus/HSV-1_LIM/bams_no_virus_UCSC/*.bam`
+for sample in `ls /home/mmacchie/mouse/virus/HSV-1_LIM/bams_no_virus_UCSC/*.bam`
 do
 base=$(basename $sample ".bam")
 samtools index ${sample}
@@ -43,7 +43,7 @@ Pre_Process -Q 7 -bam bams_no_virus_UCSC/inf_1Aligned.sortedByCoord.out.bam,bams
 
 # Identify DoGs in each bam file; minimum DoG length = 1000bp 
 mkdir DoGFinder/outdir/
-for sample in `ls /home/mmacchie/mouse/encode/virus/HSV-1_LIM/bams_no_virus_UCSC/*sorted_DS.bam`
+for sample in `ls /home/mmacchie/mouse/virus/HSV-1_LIM/bams_no_virus_UCSC/*sorted_DS.bam`
 do
 base=$(basename $sample "Aligned.sortedByCoord.out.sorted_DS.bam")
 Get_DoGs -out DoGFinder/outdir -bam ${sample} -suff ${base} -a ~/human/encode/annot/annot/loci_annotation.bed -minDoGLen 1000 -minDoGCov 0.5 -w 200 -mode F
@@ -58,10 +58,10 @@ mv DoGFinder/union_dog_annotation.bed DoGFinder/all_HSV-1_LIM_DoGs.bed
 ####----featureCounts - genes and repeats-----------------####
 
 # Quantify gene and repeat features with featureCounts
-for sample in `ls /home/mmacchie/mouse/encode/virus/HSV-1_LIM/bams_no_virus_UCSC/*Aligned.sortedByCoord.out.bam`
+for sample in `ls /home/mmacchie/mouse/virus/HSV-1_LIM/bams_no_virus_UCSC/*Aligned.sortedByCoord.out.bam`
 do
 base=$(basename $sample "Aligned.sortedByCoord.out.bam")
-dir="/home/mmacchie/mouse/encode/virus/HSV-1_LIM/featurecounts/"
+dir="/home/mmacchie/mouse/virus/HSV-1_LIM/featurecounts/"
 # featurecounts - quantify DFAM repeat elements (repeats that overlap exons were removed from GTF)
 nohup featureCounts -T 4 -t exon -g gene_id -a /home/mmacchie/mouse/encode/annot/C57BL6.mm10.dfam.repeat2.novexons.UCSC.gtf -o ${dir}/${base}_repeat_counts.txt ${sample} &
 # featurecounts - quantify Ensembl genes 
@@ -77,12 +77,12 @@ paste <(cut -f 1-6 featurecounts/inf_1*_repeat_counts.txt) featurecounts/tmp.txt
 
 ####----Featurecounts - intron expression-----------------####
 
-for sample in `ls /home/mmacchie/mouse/encode/virus/HSV-1_LIM/bams_no_virus_UCSC/*Aligned.sortedByCoord.out.bam`
+for sample in `ls /home/mmacchie/mouse/virus/HSV-1_LIM/bams_no_virus_UCSC/*Aligned.sortedByCoord.out.bam`
 do
-dir="/home/mmacchie/mouse/encode/virus/HSV-1_LIM/intron_expression/featurecounts/"
+dir="/home/mmacchie/mouse/virus/HSV-1_LIM/intron_expression/featurecounts/"
 base=$(basename $sample "Aligned.sortedByCoord.out.bam")
 # quantify introns
-featureCounts -T 6 -t exon -g gene_id -a /home/mmacchie/mouse/encode/annot/Mus_musculus.GRCm38.90.chr.introns.gtf -o ${dir}/${base}_counts_introns.txt ${sample} 
+featureCounts -T 6 -t exon -g gene_id -a /home/mmacchie/mouse/annot/Mus_musculus.GRCm38.90.chr.introns.gtf -o ${dir}/${base}_counts_introns.txt ${sample} 
 done
 
 # Create intron counts matrix
