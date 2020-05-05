@@ -4,6 +4,8 @@
 #! /bin/bash/
 
 ####----Align reads to mm10 genome------------------------####
+# these bams will be used as input to featurecounts
+
 for sample in `ls /home/mmacchie/mouse/virus/HSV-1_LIM/*.fq`
 do
 base=$(basename $sample ".fq")
@@ -13,7 +15,8 @@ done
 
 
 
-####----Align reads to mm10 + virus genome----------------####
+####----Align reads to mm10 + virus genome ----------------####
+# these bams will be used as input to TEtranscripts
 
 for sample in `ls /home/mmacchie/mouse/virus/HSV-1_LIM/*.fq`
 do
