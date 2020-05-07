@@ -1,8 +1,16 @@
 # This script combines DE repeat/TE loci from all virus data sets into one file (Creates Supplemental Table for DE loci in manuscript)
 
+# place this script in a directory containing all the edgeR results tables and the "master.te.to.gene.table.FULL.exonannot2.txt"
+# downloaded from the Google Drive (https://drive.google.com/open?id=1VtHjlPF-JspbFLsqk9MLzHHf4ZqU5_3e).
+# The edgeR results tables have names like: DEreps_IAV_FDR0.05.txt
+# and have five columns: column 1= repeat or gene ID, column 2 = log Fold Change, column 3 = log CPM, column 4= p-value, column 5 = FDR.
+
 import sys,glob
 
+# 
+annotations = open("master.te.to.gene.table.FULL.exonannot2.txt",'r')
 outfile = open('shared.DEreps2.FDR0.05.mouseviruses2.txt','w')
+
 ### create virus list from edgeR results files that are names "DEreps2_<virusname>_FDR0.05.txt".
 DEreps2 = {}
 vecsize = len(glob.glob('./DEreps2*_FDR0.05.txt'))
@@ -13,7 +21,7 @@ print viruslist
 
 ##----------create a dictionary containing rep family information and coordinates-------#
 master = {}
-for line in open("/Users/mmacchie/Desktop/TE_project/mouse_encode/counts/ENCODE-processed-totalRNA/MM_EP_STAR_FC_DFAM_finalresults/master.te.to.gene.table.FULL.exonannot2.txt",'r'):
+for line in annotations:
         f = line.strip().split('\t')
         chrom = f[0]    
         start = f[3]
@@ -24,34 +32,37 @@ for line in open("/Users/mmacchie/Desktop/TE_project/mouse_encode/counts/ENCODE-
         if dfid not in master:
                 master[dfid] = [chrom,start,stop,class1,family]
 
-# initialize the DErep dictionary; open all edgeR DE result files for each virus; save each repeat and leave place holders for each data set
+# Initialize the DErep dictionary; open all edgeR DE result files for each virus; save each repeat and leave place holders for each data set
+# This loop opens each edgeR DE results table, and saves all the possible DE repeats into a dictionary called DEreps2. Each repeat is equal to 
+# a list of zeros, where the length of the list is equal to the number of viruses (vecsize). 
 for filename in glob.glob('./DEreps2*_FDR0.05.txt'):
-        infile = open(filename,'r')
-        infile.readline()
-        for line in infile:
-                f = line.strip().split('\t')
-                rep = f[0]
-                if rep not in DEreps2:
+        infile = open(filename,'r') # open the DE results table
+        infile.readline() # ignore the header line of the DE results table
+        for line in infile: # iterate through repeats in the DE results table of virus dataset X
+                f = line.strip().split('\t') 
+                rep = f[0] # first column is the repeat ID
+                if rep not in DEreps2: # if the repeat ID is not already saved, save it, and set it equal to a list of zeros
                         DEreps2[rep] = ['0']*vecsize
-        infile.close()
+        infile.close() # close the file
 
 # Determine the expression change of each repeat for each data set and update the dictionary keys accordingly
+# IMPORTANT NOTE HERE: Because of the way that I analyzed the data with edgeR, the infected samples were the first group, and the
+# mock/uninfected samples were the second. This means that the fold changes when repeat is upregulated in infected is negative and positive when downregulated. 
+# Depending on how you set up the design, you may have to modify lines 64 and 66, by swapping the +1 and -1.
 count =-1
 for filename in glob.glob('./DEreps2*_FDR0.05.txt'):
-        count +=1
+        count +=1 # The counter here keeps tab on which virus data set we are on.
         infile = open(filename,'r')
         infile.readline()
         for line in infile:
                 f = line.strip().split('\t')
-                rep = f[0]
-                print f
-                if rep in DEreps2:
-                        FC = float(f[1])
-                        # if fold change is less than zero (repeat is upregulated)
-                        if FC < 0:
-                                DEreps2[rep][count] = '1'
-                        # if fold change is greater than zero (repeat is downregulated)
-                        elif FC > 0:
+                rep = f[0] # repeat ID is column 1
+                if rep in DEreps2: # if the repeat is in the dictionary DEreps2,
+                        FC = float(f[1]) # The fold change column is the second column.
+                        # if fold change is less than zero (repeat is upregulated in infected)
+                        if FC < 0: # if fold change is negative, then repeat is upregulated (+1)
+                                DEreps2[rep][count] = '1' # save +1 one value for the virus (count), for the repeat (rep)
+                        elif FC > 0: # if fold change is greater than zero, then the repeat is downregulated in infected (-1)
                                 DEreps2[rep][count] = '-1'
         infile.close()
 
