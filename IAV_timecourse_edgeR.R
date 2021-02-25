@@ -66,8 +66,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -89,8 +87,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -112,8 +108,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -135,8 +129,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -158,8 +150,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -181,8 +171,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -204,8 +192,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -227,8 +213,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
