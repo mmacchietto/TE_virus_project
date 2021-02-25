@@ -47,9 +47,6 @@ library(edgeR)
 
 cpms <- cpm(genes)
 
-#virus_genes <- c("PB1","PB2","HA","PA","NA","NP","M1_M2","NS1_NS2")
-#virus <- cpms[rownames(cpms) %in% virus_genes,]
-
 
 
 neworder = c("inf_1_1h","inf_2_1h","inf_3_1h","mock_1_1h","mock_2_1h","mock_3_1h")
@@ -66,8 +63,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -92,8 +87,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -116,8 +109,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -295,13 +286,6 @@ abline(v=20,lty=2,col="grey")
 
 
 
-
-
-
-
-
-
-
 ##--------------- IAV time course - Udorn -------------------------#
 
 load("IAV_timecourse_Udorn.Rda")
@@ -338,45 +322,15 @@ cpms_virus_mock <- cpms_virus_mock[match(neworder,names(cpms_virus_mock))]
 SRs <- fullmaster[fullmaster$V12 =="Simple_repeat",]$V10
 reps <- reps[!rownames(reps) %in% SRs,]
 reps <- na.omit(reps)
-#gene.anno <- genes[, c(1:5)]
-#genes <- genes[, c(6:dim(genes)[2])]
 rep.anno <- reps[, c(1:5)]
 reps <- reps[, c(6:dim(reps)[2])]
 
 
-#anno <- rbind(gene.anno,rep.anno)
 genes <- rbind(genes,reps)
 library(edgeR)
-#rpkms <- rpkm(genes,anno$Length)
+
 
 cpms <- cpm(genes)
-
-#virus_genes <- c("PB1","PB2","HA","PA","NA","NP","M1_M2","NS1_NS2")
-#virus <- cpms[rownames(cpms) %in% virus_genes,]
-
-
-
-
-
-
-#cpms <- cpm(genes)
-#virus <- subset(genes,!grepl("^EN",genes$Geneid))
-#SRs <- fullmaster[fullmaster$V12 =="Simple_repeat",]$V10
-#reps <- reps[!rownames(reps) %in% SRs,]
-#reps <- na.omit(reps)
-#gene.anno <- genes[, c(1:5)]
-#genes <- genes[, c(6:dim(genes)[2])]
-#rep.anno <- reps[, c(1:5)]
-#reps <- reps[, c(6:dim(reps)[2])]
-##anno <- rbind(gene.anno,rep.anno)
-#genes <- rbind(genes,reps)
-#library(edgeR)
-##rpkms <- rpkm(genes,anno$Length)
-#cpms <- cpm(genes)
-#virus_genes <- c("PB1","PB2","HA","PA","NA","NP","M1_M2","NS1_NS2")
-#virus <- cpms[rownames(cpms) %in% virus_genes,]
-#cpms <- subset(cpms,!grepl("^IAV1",rownames(cpms)))
-
 
 
 neworder = c("inf_1_1h","inf_2_1h","inf_3_1h","mock_1_1h","mock_2_1h","mock_3_1h")
@@ -459,7 +413,6 @@ dgs3_up <- dgs3[dgs3$logFC < 0,]
 dgs3_down <- dgs3[dgs3$logFC > 0,]
 dreps3_up <- dreps3[dreps3$logFC < 0,]
 dreps3_down <- dreps3[dreps3$logFC > 0,]
-
 
 
 TEs <- subset(fullmaster,grepl("^L",fullmaster$V12))
@@ -589,8 +542,6 @@ abline(v=6,lty=2,col="grey")
 abline(v=24,lty=2,col="grey")
 
 
-
-
 #---------  absolute total # DE genes and repeats
 plot(time2,totdreps,pch=19,xaxt="n",cex=0.5,col="darkgreen",ylab="number of DE genes and repeats",xlab="Time (h)")
 lines(time2,totdreps,col="darkgreen")
@@ -612,3 +563,5 @@ abline(v=0,lty=2,col="grey")
 abline(v=6,lty=2,col="grey")
 abline(v=20,lty=2,col="grey")
 
+
+sessionInfo()
