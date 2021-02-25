@@ -1,0 +1,1175 @@
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - Murine Coronavirus (MCV) - MOUSE
+##
+##########################################################################################
+##########################################################################################
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_MCV.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+colnames(data) <- sub("100multi.","",colnames(data))
+
+data <- data[,c(5,7,10,11)]
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+tRNAs <- subset(rownames(data),grepl("tRNA$",rownames(data)))
+
+
+library(edgeR)
+
+# create normalized count matrix
+MCV_cpm <- cpm(data)
+
+data <- data[!rownames(data) %in% mm10.viruses$V1 & !rownames(data) == "NP_045302.1" & !rownames(data) %in% tRNAs, ]
+y <- DGEList(counts=data,group=c(1,1,2,2))
+keep <- rowSums(cpm(y)>1) >= 2
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+#
+MCV_cpm_de <- MCV_cpm[rownames(MCV_cpm) %in% rownames(test),]
+MCV <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+MCVg <- test2
+
+write.table(MCV,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_MCV_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(MCVg,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_MCV_FDR0.05.txt",sep="\t",quote=FALSE)
+
+
+
+print("MCV")
+# repeats that are up and down
+dim(MCV)
+upMCV <- MCV[MCV$logFC < 0,]
+dim(upMCV)
+downMCV <- MCV[MCV$logFC > 0,]
+dim(downMCV)
+
+upMCV<- do.call(rbind,strsplit(as.character(rownames(upMCV)),":"))
+downMCV <- do.call(rbind,strsplit(as.character(rownames(downMCV)),":"))
+table(upMCV[,3])
+table(downMCV[,3])
+
+upMCV_g <- MCVg[MCVg$logFC < 0,]
+downMCV_g <- MCVg[MCVg$logFC > 0,]
+dim(upMCV_g)
+dim(downMCV_g)
+
+dim(test)
+dim(test2)
+
+
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - WNV - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_WNV.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+
+
+library(edgeR)
+
+# create normalized count matrix
+WNV_cpm <- cpm(data)
+
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+y <- DGEList(counts=data,group=c(1,1,1,2,2,2,2))
+keep <- rowSums(cpm(y)>1) >= 3
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+WNV_cpm_de <- WNV_cpm[rownames(WNV_cpm) %in% rownames(test),]
+WNV <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+WNVg <- test2
+
+write.table(WNV,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_WNV_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(WNVg,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_WNV_FDR0.05.txt",sep="\t",quote=FALSE)
+
+
+print("WNV")
+# repeats that are up and down
+dim(WNV)
+upWNV <- WNV[WNV$logFC < 0,]
+dim(upWNV)
+downWNV <- WNV[WNV$logFC > 0,]
+dim(downWNV)
+
+upWNV<- do.call(rbind,strsplit(as.character(rownames(upWNV)),":"))
+downWNV <- do.call(rbind,strsplit(as.character(rownames(downWNV)),":"))
+table(upWNV[,3])
+table(downWNV[,3])
+
+upWNV_g <- WNVg[WNVg$logFC < 0,]
+downWNV_g <- WNVg[WNVg$logFC > 0,]
+dim(upWNV_g)
+dim(downWNV_g)
+
+dim(test)
+dim(test2)
+
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - H5N1 - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_H5N1.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+
+
+### differential expression analysis 
+
+library(edgeR)
+
+# create normalized count matrix
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+H5N1_cpm <- cpm(data)
+
+y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
+keep <- rowSums(cpm(y)>1) >= 3
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+
+H5N1_cpm_de <- H5N1_cpm[rownames(H5N1_cpm) %in% rownames(test),]
+H5N1 <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+H5N1g <- test2
+
+write.table(test,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_H5N1_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_H5N1_FDR0.05.txt",sep="\t",quote=FALSE)
+
+print("H5N1")
+# repeats that are up and down
+dim(H5N1)
+upH5N1 <- H5N1[H5N1$logFC < 0,]
+dim(upH5N1)
+downH5N1 <- H5N1[H5N1$logFC > 0,]
+dim(downH5N1)
+
+
+upH5N1<- do.call(rbind,strsplit(as.character(rownames(upH5N1)),":"))
+downH5N1 <- do.call(rbind,strsplit(as.character(rownames(downH5N1)),":"))
+table(upH5N1[,3])
+table(downH5N1[,3])
+
+upH5N1g <- H5N1g[H5N1g$logFC < 0,]
+downH5N1g <- H5N1g[H5N1g$logFC > 0,]
+dim(upH5N1g)
+dim(downH5N1g)
+
+dim(test)
+dim(test2)
+
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - H5N8 - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_H5N8.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+###  rRNA IDs
+rRNAs <- subset(rownames(data),grepl("rRNA$",rownames(data)))
+
+
+### differential expression analysis 
+
+library(edgeR)
+
+# create normalized count matrix
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+H5N8_cpm <- cpm(data)
+
+y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
+keep <- rowSums(cpm(y)>1) >= 3
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+
+H5N8_cpm_de <- H5N8_cpm[rownames(H5N8_cpm) %in% rownames(test),]
+H5N8 <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+H5N8g <- test2
+
+write.table(test,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_H5N8_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_H5N8_FDR0.05.txt",sep="\t",quote=FALSE)
+
+print("H5N8")
+# repeats that are up and down
+dim(H5N8)
+upH5N8 <- H5N8[H5N8$logFC < 0,]
+dim(upH5N8)
+downH5N8 <- H5N8[H5N8$logFC > 0,]
+dim(downH5N8)
+
+
+upH5N8<- do.call(rbind,strsplit(as.character(rownames(upH5N8)),":"))
+downH5N8 <- do.call(rbind,strsplit(as.character(rownames(downH5N8)),":"))
+table(upH5N8[,3])
+table(downH5N8[,3])
+
+upH5N8g <- H5N8g[H5N8g$logFC < 0,]
+downH5N8g <- H5N8g[H5N8g$logFC > 0,]
+dim(upH5N8g)
+dim(downH5N8g)
+
+
+dim(test)
+dim(test2)
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - WNV_12hpi - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_WNV_12hpi.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+###  rRNA IDs
+rRNAs <- subset(rownames(data),grepl("rRNA$",rownames(data)))
+
+
+### differential expression analysis 
+
+library(edgeR)
+
+# create normalized count matrix
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+WNV_12hpi_cpm <- cpm(data)
+
+y <- DGEList(counts=data,group=c(1,1,2,2))
+keep <- rowSums(cpm(y)>1) >= 1
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+
+WNV_12hpi_cpm_de <- WNV_12hpi_cpm[rownames(WNV_12hpi_cpm) %in% rownames(test),]
+WNV_12hpi <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+WNV_12hpig <- test2
+
+write.table(test,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_WNV_12hpi_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_WNV_12hpi_FDR0.05.txt",sep="\t",quote=FALSE)
+
+print("WNV_12hpi")
+# repeats that are up and down
+dim(WNV_12hpi)
+upWNV_12hpi <- WNV_12hpi[WNV_12hpi$logFC < 0,]
+dim(upWNV_12hpi)
+downWNV_12hpi <- WNV_12hpi[WNV_12hpi$logFC > 0,]
+dim(downWNV_12hpi)
+
+
+upWNV_12hpi<- do.call(rbind,strsplit(as.character(rownames(upWNV_12hpi)),":"))
+downWNV_12hpi <- do.call(rbind,strsplit(as.character(rownames(downWNV_12hpi)),":"))
+table(upWNV_12hpi[,3])
+table(downWNV_12hpi[,3])
+
+upWNV_12hpig <- WNV_12hpig[WNV_12hpig$logFC < 0,]
+downWNV_12hpig <- WNV_12hpig[WNV_12hpig$logFC > 0,]
+dim(upWNV_12hpig)
+dim(downWNV_12hpig)
+
+dim(test)
+dim(test2)
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - IBV - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_IBV.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+
+
+### differential expression analysis 
+
+library(edgeR)
+
+# create normalized count matrix
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+IBV_cpm <- cpm(data)
+
+y <- DGEList(counts=data,group=c(1,1,1,1,2,2,2,2))
+keep <- rowSums(cpm(y)>1) >= 4
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+
+IBV_cpm_de <- IBV_cpm[rownames(IBV_cpm) %in% rownames(test),]
+IBV <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+IBVg <- test2
+
+write.table(test,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_IBV_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_IBV_FDR0.05.txt",sep="\t",quote=FALSE)
+
+print("IBV")
+# repeats that are up and down
+dim(IBV)
+upIBV <- IBV[IBV$logFC < 0,]
+dim(upIBV)
+downIBV <- IBV[IBV$logFC > 0,]
+dim(downIBV)
+
+
+upIBV<- do.call(rbind,strsplit(as.character(rownames(upIBV)),":"))
+downIBV <- do.call(rbind,strsplit(as.character(rownames(downIBV)),":"))
+table(upIBV[,3])
+table(downIBV[,3])
+
+upIBVg <- IBVg[IBVg$logFC < 0,]
+downIBVg <- IBVg[IBVg$logFC > 0,]
+dim(upIBVg)
+dim(downIBVg)
+
+dim(test)
+dim(test2)
+
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - LCMV - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_LCMV.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+
+
+### differential expression analysis 
+
+library(edgeR)
+
+# create normalized count matrix
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+LCMV_cpm <- cpm(data)
+
+y <- DGEList(counts=data,group=c(1,1,1,1,2,2,2,2,2,2))
+keep <- rowSums(cpm(y)>1) >= 4
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+
+LCMV_cpm_de <- LCMV_cpm[rownames(LCMV_cpm) %in% rownames(test),]
+LCMV <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+LCMVg <- test2
+
+write.table(test,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_LCMV_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_LCMV_FDR0.05.txt",sep="\t",quote=FALSE)
+
+print("LCMV")
+# repeats that are up and down
+dim(LCMV)
+upLCMV <- LCMV[LCMV$logFC < 0,]
+dim(upLCMV)
+downLCMV <- LCMV[LCMV$logFC > 0,]
+dim(downLCMV)
+
+
+upLCMV<- do.call(rbind,strsplit(as.character(rownames(upLCMV)),":"))
+downLCMV <- do.call(rbind,strsplit(as.character(rownames(downLCMV)),":"))
+table(upLCMV[,3])
+table(downLCMV[,3])
+
+upLCMVg <- LCMVg[LCMVg$logFC < 0,]
+downLCMVg <- LCMVg[LCMVg$logFC > 0,]
+dim(upLCMVg)
+dim(downLCMVg)
+
+dim(test)
+dim(test2)
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - MHV68 - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_MHV68.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+
+### differential expression analysis 
+
+library(edgeR)
+
+# create normalized count matrix
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+MHV68_cpm <- cpm(data)
+
+y <- DGEList(counts=data,group=c(1,1,2,2))
+keep <- rowSums(cpm(y)>1) >= 2
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+
+MHV68_cpm_de <- MHV68_cpm[rownames(MHV68_cpm) %in% rownames(test),]
+MHV68 <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+MHV68g <- test2
+
+write.table(test,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_MHV68_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_MHV68_FDR0.05.txt",sep="\t",quote=FALSE)
+
+print("MHV68")
+# repeats that are up and down
+dim(MHV68)
+upMHV68 <- MHV68[MHV68$logFC < 0,]
+dim(upMHV68)
+downMHV68 <- MHV68[MHV68$logFC > 0,]
+dim(downMHV68)
+
+
+upMHV68<- do.call(rbind,strsplit(as.character(rownames(upMHV68)),":"))
+downMHV68 <- do.call(rbind,strsplit(as.character(rownames(downMHV68)),":"))
+table(upMHV68[,3])
+table(downMHV68[,3])
+
+upMHV68g <- MHV68g[MHV68g$logFC < 0,]
+downMHV68g <- MHV68g[MHV68g$logFC > 0,]
+dim(upMHV68g)
+dim(downMHV68g)
+dim(test)
+dim(test2)
+
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - HSV-1_DRG - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_HSV-1_DRG.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+
+### differential expression analysis 
+
+library(edgeR)
+
+# create normalized count matrix
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+HSV-1_DRG_cpm <- cpm(data)
+
+y <- DGEList(counts=data,group=c(1,1,2,2))
+keep <- rowSums(cpm(y)>1) >= 2
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+
+HSV-1_DRG_cpm_de <- HSV-1_DRG_cpm[rownames(HSV-1_DRG_cpm) %in% rownames(test),]
+HSV1_DRG <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+HSV1_DRGg <- test2
+
+write.table(test,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_HSV-1_DRG_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_HSV-1_DRG_FDR0.05.txt",sep="\t",quote=FALSE)
+
+print("HSV-1_DRG")
+# repeats that are up and down
+dim(HSV1_DRG)
+upHSV1_DRG <- HSV1_DRG[HSV1_DRG$logFC < 0,]
+dim(upHSV1_DRG)
+downHSV1_DRG <- HSV1_DRG[HSV1_DRG$logFC > 0,]
+dim(downHSV1_DRG)
+
+
+upHSV1_DRG<- do.call(rbind,strsplit(as.character(rownames(upHSV1_DRG)),":"))
+downHSV1_DRG <- do.call(rbind,strsplit(as.character(rownames(downHSV1_DRG)),":"))
+table(upHSV1_DRG[,3])
+table(downHSV1_DRG[,3])
+
+upHSV1_DRGg <- HSV1_DRGg[HSV1_DRGg$logFC < 0,]
+downHSV1_DRGg <- HSV1_DRGg[HSV1_DRGg$logFC > 0,]
+dim(upHSV1_DRGg)
+dim(downHSV1_DRGg)
+
+dim(test)
+dim(test2)
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - HSV-1_LIM - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_HSV-1_LIM.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+
+### differential expression analysis 
+
+library(edgeR)
+
+# create normalized count matrix
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+HSV-1_LIM_cpm <- cpm(data)
+
+y <- DGEList(counts=data,group=c(1,1,2,2))
+keep <- rowSums(cpm(y)>1) >= 2
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+
+HSV-1_LIM_cpm_de <- HSV-1_LIM_cpm[rownames(HSV-1_LIM_cpm) %in% rownames(test),]
+HSV1_LIM <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+HSV1_LIMg <- test2
+
+write.table(test,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_HSV-1_LIM_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_HSV-1_LIM_FDR0.05.txt",sep="\t",quote=FALSE)
+
+print("HSV-1_LIM")
+# repeats that are up and down
+dim(HSV1_LIM)
+upHSV1_LIM <- HSV1_LIM[HSV1_LIM$logFC < 0,]
+dim(upHSV1_LIM)
+downHSV1_LIM <- HSV1_LIM[HSV1_LIM$logFC > 0,]
+dim(downHSV1_LIM)
+
+
+upHSV1_LIM<- do.call(rbind,strsplit(as.character(rownames(upHSV1_LIM)),":"))
+downHSV1_LIM <- do.call(rbind,strsplit(as.character(rownames(downHSV1_LIM)),":"))
+table(upHSV1_LIM[,3])
+table(downHSV1_LIM[,3])
+
+upHSV1_LIMg <- HSV1_LIMg[HSV1_LIMg$logFC < 0,]
+downHSV1_LIMg <- HSV1_LIMg[HSV1_LIMg$logFC > 0,]
+dim(upHSV1_LIMg)
+dim(downHSV1_LIMg)
+
+dim(test)
+dim(test2)
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - MCMV - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_MCMV.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+
+### differential expression analysis 
+
+library(edgeR)
+
+# create normalized count matrix
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+MCMV_cpm <- cpm(data)
+
+y <- DGEList(counts=data,group=c(1,1,1,2,2,2))
+keep <- rowSums(cpm(y)>1) >= 3
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+
+MCMV_cpm_de <- MCMV_cpm[rownames(MCMV_cpm) %in% rownames(test),]
+MCMV <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+MCMVg <- test2
+
+write.table(test,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_MCMV_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_MCMV_FDR0.05.txt",sep="\t",quote=FALSE)
+
+print("MCMV")
+# repeats that are up and down
+dim(MCMV)
+upMCMV <- MCMV[MCMV$logFC < 0,]
+dim(upMCMV)
+downMCMV <- MCMV[MCMV$logFC > 0,]
+dim(downMCMV)
+
+
+upMCMV<- do.call(rbind,strsplit(as.character(rownames(upMCMV)),":"))
+downMCMV <- do.call(rbind,strsplit(as.character(rownames(downMCMV)),":"))
+table(upMCMV[,3])
+table(downMCMV[,3])
+
+upMCMVg <- MCMVg[MCMVg$logFC < 0,]
+downMCMVg <- MCMVg[MCMVg$logFC > 0,]
+dim(upMCMVg)
+dim(downMCMVg)
+
+dim(test)
+dim(test2)
+
+
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - GSE115904 - MOUSE
+##
+##########################################################################################
+##########################################################################################
+
+
+### Load data
+#data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_influenza_GSE115904_novDoGsintrons.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_influenza_GSE115904.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+
+rRNAs <- subset(rownames(data),grepl("rRNA$",rownames(data)))
+
+
+
+
+library(edgeR)
+# create counts matrices for comparisons
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+AM_naive <- data[,c(4,5,10,16,24,30,31,32)]
+AECII_naive <- data[,c(7,8,9,14,17,22,23,29)]
+CC_naive <- data[,c(1,2,3,11,19,21,26,28)]
+CD103_naive <- data[,c(6,12,13,15,18,20,25,27)]
+
+# create normalized count matrix
+GS_cpm <- cpm(data)
+
+### edgeR pipeline - AM vs. naive comparison
+y <- DGEList(counts=AM_naive,group=c(1,1,1,1,2,2,2,2))
+keep <- rowSums(cpm(y)>1) >= 4
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(AM_naive)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test3 <- test[test$FDR < 0.05,]
+INF_AM_naive2 <- test3
+upINF_AM_naive2 <- test3[test3$logFC < 0,]
+dim(upINF_AM_naive2)
+downINF_AM_naive2 <- test3[test3$logFC > 0,]
+dim(downINF_AM_naive2)
+
+
+INF_AM_naive_cpm_de <- GS_cpm[rownames(GS_cpm) %in% rownames(test),]
+INF_AM_naive <- test3
+
+upINF_AM_naive <- INF_AM_naive[INF_AM_naive$logFC < 0 & !rownames(INF_AM_naive) %in% mm10.viruses$V1,]
+dim(upINF_AM_naive)
+downINF_AM_naive<- INF_AM_naive[INF_AM_naive$logFC > 0 & !rownames(INF_AM_naive) %in% mm10.viruses$V1,]
+dim(downINF_AM_naive)
+
+upINF_AM_naive <- do.call(rbind,strsplit(as.character(rownames(upINF_AM_naive)),":"))
+downINF_AM_naive <- do.call(rbind,strsplit(as.character(rownames(downINF_AM_naive)),":"))
+table(upINF_AM_naive[,3])
+table(downINF_AM_naive[,3])
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+INF_AM_naive_g <- test2
+upINF_AM_naive_g <- test2[test2$logFC < 0 & !rownames(test2) %in% mm10.viruses$V1,]
+dim(upINF_AM_naive_g)
+downINF_AM_naive_g<- test2[test2$logFC > 0 & !rownames(test2) %in% mm10.viruses$V1,]
+dim(downINF_AM_naive_g)
+
+dim(test)
+dim(test2)
+
+write.table(test3,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_IAVam_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_IAVam_FDR0.05.txt",sep="\t",quote=FALSE)
+
+
+
+
+### edgeR pipeline - AECII vs. naive comparison
+y <- DGEList(counts=AECII_naive,group=c(1,1,1,1,2,2,2,2))
+keep <- rowSums(cpm(y)>1) >= 4
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(AECII_naive)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test3 <- test[test$FDR < 0.05 ,]
+test <- test[test$FDR < 0.05 ,]
+INF_AECII_naive2 <- test3
+upINF_AECII_naive2 <- test3[test3$logFC < 0,]
+dim(upINF_AECII_naive2)
+downINF_AECII_naive2 <- test3[test3$logFC > 0,]
+dim(downINF_AECII_naive2)
+
+INF_AECII_naive_cpm_de <- GS_cpm[rownames(GS_cpm) %in% rownames(test),]
+INF_AECII_naive_tpm_de <- GS_tpm[rownames(GS_tpm) %in% rownames(test),]
+INF_AECII_naive <- test3
+
+upINF_AECII_naive <- INF_AECII_naive[INF_AECII_naive$logFC < 0 & !rownames(INF_AECII_naive) %in% mm10.viruses$V1,]
+dim(upINF_AECII_naive)
+downINF_AECII_naive<- INF_AECII_naive[INF_AECII_naive$logFC > 0 & !rownames(INF_AECII_naive) %in% mm10.viruses$V1,]
+dim(downINF_AECII_naive)
+
+upINF_AECII_naive <- do.call(rbind,strsplit(as.character(rownames(upINF_AECII_naive)),":"))
+downINF_AECII_naive <- do.call(rbind,strsplit(as.character(rownames(downINF_AECII_naive)),":"))
+table(upINF_AECII_naive[,3])
+table(downINF_AECII_naive[,3])
+
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05 ,]
+INF_AECII_naive_g <- test2
+upINF_AECII_naive_g <- test2[test2$logFC < 0 & !rownames(test2) %in% mm10.viruses$V1,]
+dim(upINF_AECII_naive_g)
+downINF_AECII_naive_g<- test2[test2$logFC > 0 & !rownames(test2) %in% mm10.viruses$V1,]
+dim(downINF_AECII_naive_g)
+
+dim(test)
+dim(test2)
+
+write.table(test3,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_IAVaecii_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_IAVaecii_FDR0.05.txt",sep="\t",quote=FALSE)
+
+
+
+
+
+
+### edgeR pipeline - CC vs. naive comparison
+y <- DGEList(counts=CC_naive,group=c(1,1,1,1,2,2,2,2))
+keep <- rowSums(cpm(y)>1) >= 4
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(CC_naive)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test3 <- test[test$FDR < 0.05 ,]
+test <- test[test$FDR < 0.05 ,]
+upINF_CC_naive2 <- test3[test3$logFC < 0,]
+dim(upINF_CC_naive2)
+downINF_CC_naive2 <- test3[test3$logFC > 0,]
+dim(downINF_CC_naive2)
+
+
+INF_CC_naive_cpm_de <- GS_cpm[rownames(GS_cpm) %in% rownames(test),]
+INF_CC_naive <- test3
+
+upINF_CC_naive <- INF_CC_naive[INF_CC_naive$logFC < 0 & !rownames(INF_CC_naive) %in% mm10.viruses$V1,]
+dim(upINF_CC_naive)
+downINF_CC_naive<- INF_CC_naive[INF_CC_naive$logFC > 0 & !rownames(INF_CC_naive) %in% mm10.viruses$V1,]
+dim(downINF_CC_naive)
+
+upINF_CC_naive <- do.call(rbind,strsplit(as.character(rownames(upINF_CC_naive)),":"))
+downINF_CC_naive <- do.call(rbind,strsplit(as.character(rownames(downINF_CC_naive)),":"))
+table(upINF_CC_naive[,3])
+table(downINF_CC_naive[,3])
+
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05 ,]
+INF_CC_naive_g <- test2
+upINF_CC_naive_g <- test2[test2$logFC < 0 & !rownames(test2) %in% mm10.viruses$V1,]
+dim(upINF_CC_naive_g)
+downINF_CC_naive_g<- test2[test2$logFC > 0 & !rownames(test2) %in% mm10.viruses$V1,]
+dim(downINF_CC_naive_g)
+
+dim(test)
+dim(test2)
+
+write.table(test3,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_IAVcc_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_IAVcc_FDR0.05.txt",sep="\t",quote=FALSE)
+
+
+
+### edgeR pipeline - CD103 vs. naive comparison
+y <- DGEList(counts=CD103_naive,group=c(1,1,1,1,2,2,2,2))
+keep <- rowSums(cpm(y)>1) >= 4
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(CD103_naive)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test3 <- test[test$FDR < 0.05 ,]
+test <- test[test$FDR < 0.05 ,]
+upINF_CD103_naive2 <- test3[test3$logFC < 0,]
+dim(upINF_CD103_naive2)
+downINF_CD103_naive2 <- test3[test3$logFC > 0,]
+dim(downINF_CD103_naive2)
+
+INF_CD103_naive_cpm_de <- GS_cpm[rownames(GS_cpm) %in% rownames(test),]
+INF_CD103_naive <- test3
+
+upINF_CD103_naive <- INF_CD103_naive[INF_CD103_naive$logFC < 0 & !rownames(INF_CD103_naive) %in% mm10.viruses$V1,]
+dim(upINF_CD103_naive)
+downINF_CD103_naive<- INF_CD103_naive[INF_CD103_naive$logFC > 0 & !rownames(INF_CD103_naive) %in% mm10.viruses$V1,]
+dim(downINF_CD103_naive)
+
+upINF_CD103_naive <- do.call(rbind,strsplit(as.character(rownames(upINF_CD103_naive)),":"))
+downINF_CD103_naive <- do.call(rbind,strsplit(as.character(rownames(downINF_CD103_naive)),":"))
+table(upINF_CD103_naive[,3])
+table(downINF_CD103_naive[,3])
+
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05 ,]
+INF_CD103_naive_g <- test2 
+upINF_CD103_naive_g <- test2[test2$logFC < 0 & !rownames(test2) %in% mm10.viruses$V1,]
+dim(upINF_CD103_naive_g)
+downINF_CD103_naive_g<- test2[test2$logFC > 0 & !rownames(test2) %in% mm10.viruses$V1,]
+dim(downINF_CD103_naive_g)
+
+dim(test)
+dim(test2)
+
+write.table(test3,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_IAVcd103_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_IAVcd103_FDR0.05.txt",sep="\t",quote=FALSE)
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - HSV-1_DRG - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_HSV-1_DRG.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+
+library(edgeR)
+
+# create normalized count matrix
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+HSV1_DRG_cpm <- cpm(data)
+
+
+y <- DGEList(counts=data,group=c(1,1,2,2))
+keep <- rowSums(cpm(y)>1) >= 2
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+data_reps <- data[rownames(data) %in% rownames(test),]
+HSV1_DRG_cpm_de <- HSV1_DRG_cpm[rownames(HSV1_DRG_cpm) %in% rownames(test),]
+HSV1_DRG <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+HSV1_DRGg <- test2
+
+write.table(test,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_HSV-1_DRG_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_HSV-1_DRG_FDR0.05.txt",sep="\t",quote=FALSE)
+
+
+# repeats that are up and down
+dim(HSV1_DRG)
+upHSV1_DRG <- HSV1_DRG[HSV1_DRG$logFC < 0,]
+dim(upHSV1_DRG)
+downHSV1_DRG <- HSV1_DRG[HSV1_DRG$logFC > 0,]
+dim(downHSV1_DRG)
+
+
+upHSV1_DRG<- do.call(rbind,strsplit(as.character(rownames(upHSV1_DRG)),":"))
+downHSV1_DRG <- do.call(rbind,strsplit(as.character(rownames(downHSV1_DRG)),":"))
+table(upHSV1_DRG[,3])
+table(downHSV1_DRG[,3])
+
+upHSV1_DRGg <- HSV1_DRGg[HSV1_DRGg$logFC < 0,]
+downHSV1_DRGg <- HSV1_DRGg[HSV1_DRGg$logFC > 0,]
+dim(upHSV1_DRGg)
+dim(downHSV1_DRGg)
+
+
+
+##########################################################################################
+##########################################################################################
+##
+## TEtranscripts - HSV-1_DRG - MOUSE 
+##
+##########################################################################################
+##########################################################################################
+
+
+### Load data
+data <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/TEtrans_HSV-1_LIM.cntTable",sep="\t",header=TRUE,row.names="gene.TE")
+colnames(data) <- sub("bams.","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.C","",colnames(data))
+colnames(data) <- sub("Aligned.sortedByCoord.out.bam.T","",colnames(data))
+
+###  List virus genes, rRNAs
+
+###  Virus IDs
+mm10.viruses <- read.delim("/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/virus.genes.mm10.txt",sep="\t",header=FALSE)
+
+
+# create normalized count matrix
+data <- data[!rownames(data) %in% mm10.viruses$V1,]
+HSV1_LIM_cpm <- cpm(data)
+
+
+y <- DGEList(counts=data,group=c(1,1,2,2))
+keep <- rowSums(cpm(y)>1) >= 2
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y)
+et <- exactTest(y)
+tt <- topTags(et,n=dim(data)[1])
+tt <- tt$table
+test <- subset(tt,!grepl("^EN",rownames(tt)))
+test <- test[test$FDR < 0.05,]
+data_reps <- data[rownames(data) %in% rownames(test),]
+HSV1_LIM_cpm_de <- HSV1_LIM_cpm[rownames(HSV1_LIM_cpm) %in% rownames(test),]
+HSV1_LIM <- test
+test2 <- subset(tt,grepl("^EN",rownames(tt)))
+test2 <- test2[test2$FDR < 0.05,]
+HSV1_LIMg <- test2
+
+write.table(test,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEreps_TEtrans_HSV-1_LIM_FDR0.05.txt",sep="\t",quote=FALSE)
+write.table(test2,"/Users/mmacchie/Desktop/TE_project/mouse_encode/TEtranscripts/viruses/mm10/noSRs/results_newthres/DEgenes_TEtrans_HSV-1_LIM_FDR0.05.txt",sep="\t",quote=FALSE)
+
+
+# repeats that are up and down
+dim(HSV1_LIM)
+upHSV1_LIM <- HSV1_LIM[HSV1_LIM$logFC < 0,]
+dim(upHSV1_LIM)
+downHSV1_LIM <- HSV1_LIM[HSV1_LIM$logFC > 0,]
+dim(downHSV1_LIM)
+
+
+upHSV1_LIM<- do.call(rbind,strsplit(as.character(rownames(upHSV1_LIM)),":"))
+downHSV1_LIM <- do.call(rbind,strsplit(as.character(rownames(downHSV1_LIM)),":"))
+table(upHSV1_LIM[,3])
+table(downHSV1_LIM[,3])
+
+upHSV1_LIMg <- HSV1_LIMg[HSV1_LIMg$logFC < 0,]
+downHSV1_LIMg <- HSV1_LIMg[HSV1_LIMg$logFC > 0,]
+dim(upHSV1_LIMg)
+dim(downHSV1_LIMg)
+
+
+
