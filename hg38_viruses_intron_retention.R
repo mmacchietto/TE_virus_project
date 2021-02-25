@@ -25,8 +25,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -90,8 +88,6 @@ keep <- rowSums(cpm(y)>1) >= 5
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -157,8 +153,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -222,8 +216,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -288,8 +280,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -353,8 +343,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -418,8 +406,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -484,8 +470,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -549,8 +533,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -613,8 +595,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -677,8 +657,6 @@ keep <- rowSums(cpm(y)>1) >= 4
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -744,8 +722,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -809,8 +785,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -873,8 +847,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -937,8 +909,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -1005,8 +975,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -1072,8 +1040,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -1139,8 +1105,6 @@ keep <- rowSums(cpm(y)>1) >= 2
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -1201,8 +1165,6 @@ keep <- rowSums(cpm(y)>1) >= 5
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -1263,8 +1225,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -1325,8 +1285,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -1389,8 +1347,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -1456,8 +1412,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -1520,8 +1474,6 @@ keep <- rowSums(cpm(y)>1) >= 3
 y <- y[keep, , keep.lib.sizes=FALSE]
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
-y <- estimateCommonDisp(y)
-y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
 tt <- topTags(et,n=dim(genes)[1])
 tt <- tt$table
@@ -1646,8 +1598,6 @@ pheatmap(test)
 #d <- read.delim("shared.DEgenes.FDR0.05.FC2.humanviruses.wsummary.txt")
 #test <- d[d$totDE >= 3,1:16] # in at least 5 virus data sets (628 genes)
 
-
-
 back <- unique(fullmaster[!fullmaster$V15=="autonomous",c(10,12,14)])
 sum(table(back$V12))
 back2 <- table(back$V12)/sum(table(back$V12))
@@ -1727,5 +1677,4 @@ print(rep_table)
 ##-----Fisher's exact enrichment test - all repeats-----#
 
 
-
-# write out the repeat IDs of the 
+sessionInfo()
